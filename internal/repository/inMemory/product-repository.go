@@ -15,10 +15,10 @@ func NewInMemoryProductRepository() * InMemoryProductRepository {
 	}
 }
 
-func (db *InMemoryProductRepository) AddProduct(product *domain.Product) domain.Product {
+func (db *InMemoryProductRepository) AddProduct(product *domain.Product) *domain.Product {
 	product.Id = len(db.inMemoryProductDb) + 1
 	db.inMemoryProductDb = append(db.inMemoryProductDb, *product)
-	return *product;
+	return product;
 }
 
 func (db *InMemoryProductRepository) FindProductById(id int) (*domain.Product, error) {

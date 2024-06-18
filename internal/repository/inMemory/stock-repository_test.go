@@ -1,7 +1,6 @@
 package inMemory
 
 import (
-	"fmt"
 	"product-warehouse/internal/domain"
 	port "product-warehouse/internal/port/repository"
 	"reflect"
@@ -35,7 +34,7 @@ func TestStockRepository_Success_FindStockByProductId(t *testing.T) {
 
 	stockRepository.AddStock(&stockTest)
 
-	resultTest, _ := stockRepository.FindStockByProductId(stockTest.Product_id)
+	resultTest := stockRepository.FindStockByProductId(stockTest.Product_id)
 
 	if !reflect.DeepEqual(*resultTest, stockTest) {
 		t.Errorf("Stock body expected: %v, got: %v", stockTest, resultTest)
@@ -47,12 +46,10 @@ func TestStockRepository_NotFound_FindStockByProductId(t *testing.T) {
 
 	productId := 1
 
-	errorTest := fmt.Errorf("stock with productId %d not found", productId)
+	resultTest := stockRepository.FindStockByProductId(productId)
 
-	_, resultTest := stockRepository.FindStockByProductId(productId)
-
-	if resultTest.Error() != errorTest.Error() {
-		t.Errorf("Error message expected: %v, got: %v", errorTest,resultTest)
+	if resultTest != nil {
+		t.Errorf("Result expected: %v, got: %v", nil, resultTest)
 	}
 }
 

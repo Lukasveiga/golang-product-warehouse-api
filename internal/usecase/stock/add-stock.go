@@ -26,7 +26,7 @@ func (sc CreateStockUsecase) Execute(stockDto *dto.StockDto) (*domain.Stock, err
 		return nil, fmt.Errorf("product with id %d not found", stockDto.Product_id)
 	}
 
-	stock, _ := sc.stockRepo.FindStockByProductId(stockDto.Product_id)
+	stock := sc.stockRepo.FindStockByProductId(stockDto.Product_id)
 
 	if stock != nil {
 		return sc.stockRepo.UpdateStockQuantity(stock.Id, stockDto.Quantity), nil

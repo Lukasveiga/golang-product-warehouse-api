@@ -1,7 +1,6 @@
 package inMemory
 
 import (
-	"fmt"
 	"product-warehouse/internal/domain"
 )
 
@@ -21,7 +20,7 @@ func (db *InMemoryStockRepository) AddStock(stock *domain.Stock) *domain.Stock {
 	return stock;
 }
 
-func (db *InMemoryStockRepository) FindStockByProductId(productId int) (*domain.Stock, error) {
+func (db *InMemoryStockRepository) FindStockByProductId(productId int) (*domain.Stock) {
 	result := []*domain.Stock{}
 
 	for i := range db.inMemoryStockDb {
@@ -32,10 +31,10 @@ func (db *InMemoryStockRepository) FindStockByProductId(productId int) (*domain.
 	}
 
 	if len(result) == 0 {
-		return nil, fmt.Errorf("stock with productId %d not found", productId)
+		return nil
 	}
 
-	return result[0], nil
+	return result[0]
 }
 
 func (db *InMemoryStockRepository) UpdateStockQuantity(stockId int, quantity int) *domain.Stock {

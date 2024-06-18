@@ -16,6 +16,6 @@ func NewCreateProductUsecase(repo port.ProductRepository) *CreateProductUsecase 
 	}
 }
 
-func (uc CreateProductUsecase) Execute(product dto.ProductDto) *domain.Product {
+func (uc CreateProductUsecase) Execute(product *dto.ProductDto) *domain.Product {
 	return uc.repo.AddProduct(dto.NewProduct(product))
 }

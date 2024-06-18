@@ -23,7 +23,7 @@ func NewProductController(createProductUseCase *usecase.CreateProductUsecase, fi
 }
 
 func (pc ProductController) Create(res http.ResponseWriter, req *http.Request) {
-	var productDto dto.ProductDto
+	var productDto *dto.ProductDto
 	err := json.NewDecoder(req.Body).Decode(&productDto)
 
 	if err != nil {

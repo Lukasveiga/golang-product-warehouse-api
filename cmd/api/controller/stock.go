@@ -23,7 +23,7 @@ func NewStockController(createStock *usecase.CreateStockUsecase, findStockByProd
 }
 
 func (sc StockController) Create(res http.ResponseWriter, req *http.Request) {
-	var stockDto dto.StockDto
+	var stockDto *dto.StockDto
 	err := json.NewDecoder(req.Body).Decode(&stockDto)
 
 	if err != nil {

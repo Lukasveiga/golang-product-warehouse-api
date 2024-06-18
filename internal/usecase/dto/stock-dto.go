@@ -7,7 +7,7 @@ type StockDto struct {
 	Quantity int `json:"quantity"`
 }
 
-func NewStock(stockDto StockDto) *domain.Stock {
+func NewStock(stockDto *StockDto) *domain.Stock {
 	return &domain.Stock{
 		Product_id: stockDto.Product_id,
 		Quantity: stockDto.Quantity,

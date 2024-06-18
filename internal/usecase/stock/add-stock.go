@@ -18,7 +18,7 @@ func NewCreateStockUsecase(stockRepo port.StockRepository, productRepo port.Prod
 	}
 }
 
-func (sc CreateStockUsecase) Execute(stockDto dto.StockDto) (*domain.Stock, error) {
+func (sc CreateStockUsecase) Execute(stockDto *dto.StockDto) (*domain.Stock, error) {
 	_, err := sc.productRepo.FindProductById(stockDto.Product_id)
 
 	if err != nil {

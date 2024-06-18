@@ -8,7 +8,7 @@ type ProductDto struct {
 	Price float64 `json:"price"`
 }
 
-func NewProduct(productDto ProductDto) *domain.Product {
+func NewProduct(productDto *ProductDto) *domain.Product {
 	return &domain.Product{
 		Name: productDto.Name,
 		Description: productDto.Description,

@@ -3,7 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"net/http"
-	"product-warehouse/internal/domain/dto"
+	"product-warehouse/internal/usecase/dto"
 	usecase "product-warehouse/internal/usecase/stock"
 	"strconv"
 

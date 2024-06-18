@@ -2,8 +2,8 @@ package usecase
 
 import (
 	"product-warehouse/internal/domain"
-	"product-warehouse/internal/domain/dto"
 	port "product-warehouse/internal/port/repository"
+	"product-warehouse/internal/usecase/dto"
 )
 
 type CreateStockUsecase struct {

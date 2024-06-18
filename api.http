@@ -14,3 +14,15 @@ Content-Type: application/json
 @product_id = {{createProduct.response.body.id}}
 
 GET http://localhost:8080/api/v1/product/{{product_id}}
+
+###
+POST http://localhost:8080/api/v1/stock
+Content-Type: application/json
+
+{
+    "product_id": {{product_id}},
+    "quantity": 10
+}
+
+###
+GET http://localhost:8080/api/v1/stock/{{product_id}}

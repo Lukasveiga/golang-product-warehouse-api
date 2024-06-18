@@ -22,7 +22,7 @@ func TestProductRepository_Success_AddProduct(t *testing.T) {
 	resultTest := productRepository.AddProduct(&productTest)
 
 	if !reflect.DeepEqual(*resultTest, productTest) {
-		t.Errorf("Product body expected: %v, got: %v", resultTest, productTest)
+		t.Errorf("Product body expected: %v, got: %v", productTest, resultTest)
 	}
 }
 
@@ -40,7 +40,7 @@ func TestProductRepository_Success_FindProductById(t *testing.T) {
 	resultTest, _ := productRepository.FindProductById(productTest.Id)
 
 	if !reflect.DeepEqual(*resultTest, productTest) {
-		t.Errorf("Product body expected: %v, got: %v", resultTest, productTest)
+		t.Errorf("Product body expected: %v, got: %v", productTest, resultTest)
 	}
 }
 
@@ -51,9 +51,9 @@ func TestProductRepository_NotFound_FindProductById(t *testing.T) {
 
 	errorTest := fmt.Errorf("product with id %d not found", productId)
 
-	_, err := productRepository.FindProductById(productId)
+	_, resultTest := productRepository.FindProductById(productId)
 
-	if err.Error() != errorTest.Error() {
-		t.Errorf("Error message expected: %v, got: %v", errorTest, err)
+	if resultTest.Error() != errorTest.Error() {
+		t.Errorf("Error message expected: %v, got: %v", errorTest,resultTest)
 	}
 }

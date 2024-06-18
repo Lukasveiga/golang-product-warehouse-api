@@ -1,7 +1,6 @@
 package inMemory
 
 import (
-	"fmt"
 	"product-warehouse/internal/domain"
 )
 
@@ -21,7 +20,7 @@ func (db *InMemoryProductRepository) AddProduct(product *domain.Product) *domain
 	return product;
 }
 
-func (db *InMemoryProductRepository) FindProductById(id int) (*domain.Product, error) {
+func (db *InMemoryProductRepository) FindProductById(id int) *domain.Product {
 	result := []*domain.Product{}
 
 	for i := range db.inMemoryProductDb {
@@ -32,8 +31,8 @@ func (db *InMemoryProductRepository) FindProductById(id int) (*domain.Product, e
 	}
 
 	if len(result) == 0 {
-		return nil, fmt.Errorf("product with id %d not found", id)
+		return nil
 	}
 
-	return result[0], nil
+	return result[0]
 }

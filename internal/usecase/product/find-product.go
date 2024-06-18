@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"fmt"
 	"product-warehouse/internal/domain"
 	port "product-warehouse/internal/port/repository"
 )
@@ -16,6 +17,11 @@ func NewFindProductByIdUsecase(repo port.ProductRepository) *FindProductByIdUsec
 }
 
 func (uc FindProductByIdUsecase) Execute(productId int) (*domain.Product, error) {
-	product, err := uc.repo.FindProductById(productId)
-	return product, err
+	product := uc.repo.FindProductById(productId)
+
+	if product == nil {
+		return nil, fmt.Errorf("product with id %d not found", productId)
+	}
+	
+	return product, nil
 }

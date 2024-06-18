@@ -1,7 +1,6 @@
 package inMemory
 
 import (
-	"fmt"
 	"product-warehouse/internal/domain"
 	port "product-warehouse/internal/port/repository"
 	"reflect"
@@ -37,7 +36,7 @@ func TestProductRepository_Success_FindProductById(t *testing.T) {
 
 	productRepository.AddProduct(&productTest)
 
-	resultTest, _ := productRepository.FindProductById(productTest.Id)
+	resultTest := productRepository.FindProductById(productTest.Id)
 
 	if !reflect.DeepEqual(*resultTest, productTest) {
 		t.Errorf("Product body expected: %v, got: %v", productTest, resultTest)
@@ -49,11 +48,9 @@ func TestProductRepository_NotFound_FindProductById(t *testing.T) {
 
 	productId := 1
 
-	errorTest := fmt.Errorf("product with id %d not found", productId)
+	resultTest := productRepository.FindProductById(productId)
 
-	_, resultTest := productRepository.FindProductById(productId)
-
-	if resultTest.Error() != errorTest.Error() {
-		t.Errorf("Error message expected: %v, got: %v", errorTest,resultTest)
+	if resultTest != nil {
+		t.Errorf("Error message expected: %v, got: %v", nil, resultTest)
 	}
 }

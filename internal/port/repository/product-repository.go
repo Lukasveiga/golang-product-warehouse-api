@@ -6,5 +6,5 @@ import (
 
 type ProductRepository interface {
 	AddProduct(product *domain.Product) *domain.Product
-	FindProductById(id int) (*domain.Product, error)
+	FindProductById(id int) (*domain.Product)
 }

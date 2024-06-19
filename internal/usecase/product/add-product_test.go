@@ -5,27 +5,27 @@ import (
 	"product-warehouse/internal/repository/inMemory"
 	"product-warehouse/internal/usecase/dto"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
-func TestProductUsecase_Success_CreateProduct(t *testing.T) {
-	productRepository := inMemory.NewInMemoryProductRepository()
-	createProductUsecase := NewCreateProductUsecase(productRepository)
-
-	productDtoTest := dto.ProductDto{
-		Name: "Product Dto Test",
-		Description: "Product Dto Test Description",
-		Price: 5.5,
-	}
-
-	resultTest := createProductUsecase.Execute(&productDtoTest)
-
-	if !productEquity(resultTest, dto.NewProduct(&productDtoTest)) {
-		t.Errorf("Product body expected: %v, got: %v", productDtoTest, resultTest)
-	}
-
-	if resultTest.Id == 0 {
-		t.Errorf("Product id expected to be different from 0")
-	}
+func TestCreateProductUsecase(t *testing.T) {
+	t.Run("CreateProduct Success", func(t *testing.T) {
+		productRepository := inMemory.NewInMemoryProductRepository()
+		createProductUsecase := NewCreateProductUsecase(productRepository)
+	
+		productDtoTest := dto.ProductDto{
+			Name: "Product Dto Test",
+			Description: "Product Dto Test Description",
+			Price: 5.5,
+		}
+	
+		resultTest := createProductUsecase.Execute(&productDtoTest)
+	
+		assert.True(t, productEquity(resultTest, dto.NewProduct(&productDtoTest)))
+	
+		assert.NotEqual(t, 0, resultTest.Id)
+	})
 }
 
 func productEquity(p1 *domain.Product, p2 *domain.Product) bool {

@@ -7,100 +7,77 @@ import (
 	"product-warehouse/internal/repository/inMemory"
 	"product-warehouse/internal/usecase/dto"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
-func setup() (port.StockRepository, port.ProductRepository, *CreateStockUsecase) {
+func addStockUsecaseSetup() (port.StockRepository, port.ProductRepository, *CreateStockUsecase, *domain.Product) {
 	stockRepository := inMemory.NewInMemoryStockRepository()
 	productRepository := inMemory.NewInMemoryProductRepository()
 	createStockUsecase := NewCreateStockUsecase(stockRepository, productRepository)
 
-	return stockRepository, productRepository, createStockUsecase
+	productTest := domain.Product{
+		Name: "Product Dto Test",
+		Description: "Product Dto Test Description",
+		Price: 5.5,
+	}
+
+	return stockRepository, productRepository, createStockUsecase, &productTest
 } 
 
-func TestStockUsecase_Success_CreateStock(t *testing.T) {
-	_, productRepository, createStockUsecase := setup()
+func TestAddStockUsecase(t *testing.T) {
 
-	productDto := domain.Product{
-		Name: "Product Dto Test",
-		Description: "Product Dto Test Description",
-		Price: 5.5,
-	}
+	stockRepository, productRepository, createStockUsecase, productTest := addStockUsecaseSetup()
 
-	product := productRepository.AddProduct(&productDto)
+	t.Run("CreateStock Success", func(t *testing.T) {
+		product := productRepository.AddProduct(productTest)
 
-	stockDtoTest := dto.StockDto{
-		Product_id: product.Id,
-		Quantity: 10,
-	}
+		stockDtoTest := dto.StockDto{
+			Product_id: product.Id,
+			Quantity: 10,
+		}
 
-	resultTest, err := createStockUsecase.Execute(&stockDtoTest)
+		resultTest, err := createStockUsecase.Execute(&stockDtoTest)
 
-	if err != nil {
-		t.Errorf("Error expected: %v, got: %v", nil, err)
-	}
+		assert.Nil(t, err)
+		assert.NotEqual(t, 0, resultTest.Id)
+		assert.True(t, stockEquity(dto.NewStock(&stockDtoTest), resultTest))
+	})
 
-	if !stockEquity(dto.NewStock(&stockDtoTest), resultTest) {
-		t.Errorf("Stock body expected: %v, got: %v", stockDtoTest, resultTest)
-	}
+	t.Run("CreateStock Success Existing Stock", func(t *testing.T) {
+		product := productRepository.AddProduct(productTest)
 
-	if resultTest.Id == 0 {
-		t.Errorf("Stock id expected to be different from 0")
-	}
-}
+		stockTest := domain.Stock{
+			Product_id: product.Id,
+			Quantity: 10,
+		}
+	
+		stockRepository.AddStock(&stockTest)
 
-func TestStockUsecase_SuccessExistingStock_CreateStock(t *testing.T) {
-	stockRepository, productRepository, createStockUsecase := setup()
+		stockDtoTest := dto.StockDto{
+			Product_id: product.Id,
+			Quantity: 10,
+		}
 
-	productDto := domain.Product{
-		Name: "Product Dto Test",
-		Description: "Product Dto Test Description",
-		Price: 5.5,
-	}
+		resultTest, err := createStockUsecase.Execute(&stockDtoTest)
 
-	product := productRepository.AddProduct(&productDto)
+		assert.Nil(t, err)
+		assert.Equal(t, 20, resultTest.Quantity)
+	})
 
-	stockTest := domain.Stock{
-		Product_id: product.Id,
-		Quantity: 10,
-	}
+	t.Run("CreateStock Product Not Found", func(t *testing.T) {
+		stockDtoTest := dto.StockDto{
+			Product_id: 3,
+			Quantity: 10,
+		}
 
-	stockRepository.AddStock(&stockTest)
+		expectedError := fmt.Errorf("product with id %d not found", stockDtoTest.Product_id)
 
-	stockDtoTest := dto.StockDto{
-		Product_id: product.Id,
-		Quantity: 10,
-	}
+		resultTest, err := createStockUsecase.Execute(&stockDtoTest)
 
-	resultTest, err := createStockUsecase.Execute(&stockDtoTest)
-
-	if err != nil {
-		t.Errorf("Error expected: %v, got: %v", nil, err)
-	}
-
-	if resultTest.Quantity != 20 {
-		t.Errorf("Quantity expected: %d, got: %v", 20, resultTest.Quantity)
-	}
-}
-
-func TestStockUsecase_ProductNotFound_CreateStock(t *testing.T) {
-	_, _, createStockUsecase := setup()
-
-	stockDtoTest := dto.StockDto{
-		Product_id: 2,
-		Quantity: 10,
-	}
-
-	expectedError := fmt.Errorf("product with id %d not found", 2)
-
-	resultTest, err := createStockUsecase.Execute(&stockDtoTest)
-
-	if resultTest != nil {
-		t.Errorf("Result test expected: %v, got: %v", nil, resultTest)
-	}
-
-	if err.Error() != expectedError.Error() {
-		t.Errorf("Expected error: %v, got: %v", expectedError, err)
-	}
+		assert.Nil(t, resultTest)
+		assert.Equal(t, expectedError, err)
+	})
 }
 
 func stockEquity(s1 *domain.Stock, s2 *domain.Stock) bool {

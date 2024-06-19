@@ -3,54 +3,44 @@ package inMemory
 import (
 	"product-warehouse/internal/domain"
 	port "product-warehouse/internal/port/repository"
-	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
-var productRepository port.ProductRepository
-
-func TestProductRepository_Success_AddProduct(t *testing.T) {
-	productRepository = NewInMemoryProductRepository()
-
+func productRepositorySetup() (port.ProductRepository, *domain.Product) {
 	productTest := domain.Product{
 		Name: "Test Product Name",
 		Description: "Test Product Description",
 		Price: 2.5, 
 	}
 
-	resultTest := productRepository.AddProduct(&productTest)
-
-	if !reflect.DeepEqual(*resultTest, productTest) {
-		t.Errorf("Product body expected: %v, got: %v", productTest, resultTest)
-	}
+	return NewInMemoryProductRepository(), &productTest
 }
 
-func TestProductRepository_Success_FindProductById(t *testing.T) {
-	productRepository = NewInMemoryProductRepository()
+func TestProductRepository(t *testing.T) {
 
-	productTest := domain.Product{
-		Name: "Test Product Name",
-		Description: "Test Product Description",
-		Price: 2.5, 
-	}
+	productRepository, productTest := productRepositorySetup()
 
-	productRepository.AddProduct(&productTest)
+	t.Run("AddProduct Success", func(t *testing.T) {
+		resultTest := productRepository.AddProduct(productTest)
 
-	resultTest := productRepository.FindProductById(productTest.Id)
+		assert.Equal(t, productTest, resultTest)
+	})
 
-	if !reflect.DeepEqual(*resultTest, productTest) {
-		t.Errorf("Product body expected: %v, got: %v", productTest, resultTest)
-	}
-}
+	t.Run("FindProductById Success", func(t *testing.T) {
+		productRepository.AddProduct(productTest)
 
-func TestProductRepository_NotFound_FindProductById(t *testing.T) {
-	productRepository = NewInMemoryProductRepository()
+		resultTest := productRepository.FindProductById(productTest.Id)
 
-	productId := 1
+		assert.Equal(t, productTest, resultTest)
+	})
 
-	resultTest := productRepository.FindProductById(productId)
+	t.Run("FindProductById Not Found", func(t *testing.T) {
+		invalidProductId := productTest.Id + 1
 
-	if resultTest != nil {
-		t.Errorf("Error message expected: %v, got: %v", nil, resultTest)
-	}
+		resultTest := productRepository.FindProductById(invalidProductId)
+
+		assert.Nil(t, resultTest)
+	})
 }

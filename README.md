@@ -10,10 +10,10 @@
     <a alt="Chi">
         <img src="https://img.shields.io/badge/Chi-v5.0.12-purple.svg" />
     </a>
-    <a alt="Jest">
+    <a alt="Viper">
         <img src="https://img.shields.io/badge/Viper-v2-brightgreen.svg" />
     </a>
-    <a alt="Express">
+    <a alt="PostgreSQL">
         <img src="https://img.shields.io/badge/PostgreSQL-v14-lightgreen.svg" />
     </a>
 </p>
@@ -25,7 +25,7 @@ Progress documentation of my first golang API
 ### Outstanding topics:
 
 - [] Custom erros;
-- [] Unit tests;
+- [x] Unit tests;
 - [] Integration tests;
 - [] Api documentation;
 - [] Monitoring;

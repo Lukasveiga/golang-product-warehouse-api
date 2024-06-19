@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func productUsecaseSetup() (port.ProductRepository, *FindProductByIdUsecase, *domain.Product) {
+func findProductUsecaseSetup() (port.ProductRepository, *FindProductByIdUsecase, *domain.Product) {
 	productRepository := inMemory.NewInMemoryProductRepository()
 	findProductByIdUsecase := NewFindProductByIdUsecase(productRepository)
 
@@ -23,9 +23,9 @@ func productUsecaseSetup() (port.ProductRepository, *FindProductByIdUsecase, *do
 	return productRepository, findProductByIdUsecase, &productTest
 }
 
-func TestProductUsecase_Success_FindProductById(t *testing.T) {
+func TestFindProductUsecase(t *testing.T) {
 
-	productRepository, findProductByIdUsecase, productTest := productUsecaseSetup()
+	productRepository, findProductByIdUsecase, productTest := findProductUsecaseSetup()
 
 	t.Run("FindProductById Success", func(t *testing.T) {
 		productRepository.AddProduct(productTest)

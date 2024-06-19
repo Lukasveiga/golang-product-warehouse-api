@@ -3,71 +3,51 @@ package inMemory
 import (
 	"product-warehouse/internal/domain"
 	port "product-warehouse/internal/port/repository"
-	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
-var stockRepository port.StockRepository
-
-func TestStockRepository_Success_AddStock(t *testing.T) {
-	stockRepository = NewInMemoryStockRepository()
-
+func stockRepositorySetup() (port.StockRepository, *domain.Stock) {
 	stockTest := domain.Stock{
 		Product_id: 1,
 		Quantity: 20,
 	}
 
-	resultTest := stockRepository.AddStock(&stockTest);
-
-	if !reflect.DeepEqual(*resultTest, stockTest) {
-		t.Errorf("Stock body expected: %v, got: %v", stockTest, resultTest)
-	}
+	return NewInMemoryStockRepository(), &stockTest
 }
 
-func TestStockRepository_Success_FindStockByProductId(t *testing.T) {
-	stockRepository = NewInMemoryStockRepository()
+func TestStockRepository(t *testing.T) {
 
-	stockTest := domain.Stock{
-		Product_id: 1,
-		Quantity: 20,
-	}
+	stockRepository, stockTest := stockRepositorySetup()
 
-	stockRepository.AddStock(&stockTest)
+	t.Run("AddStock Success", func(t *testing.T) {
+		resultTest := stockRepository.AddStock(stockTest)
 
-	resultTest := stockRepository.FindStockByProductId(stockTest.Product_id)
+		assert.Equal(t, stockTest, resultTest)
+	})
 
-	if !reflect.DeepEqual(*resultTest, stockTest) {
-		t.Errorf("Stock body expected: %v, got: %v", stockTest, resultTest)
-	}
-}
+	t.Run("FindStockByProductId Success", func(t *testing.T) {
+		resultTest := stockRepository.FindStockByProductId(stockTest.Product_id)
 
-func TestStockRepository_NotFound_FindStockByProductId(t *testing.T) {
-	stockRepository = NewInMemoryStockRepository()
+		assert.Equal(t, stockTest, resultTest)
+	})
 
-	productId := 1
+	t.Run("FindStockByProductId Not Found", func(t *testing.T) {
+		invalidProductId := stockTest.Product_id + 1
 
-	resultTest := stockRepository.FindStockByProductId(productId)
+		resultTest := stockRepository.FindStockByProductId(invalidProductId)
 
-	if resultTest != nil {
-		t.Errorf("Result expected: %v, got: %v", nil, resultTest)
-	}
-}
+		assert.Nil(t, resultTest)
+	})
 
-func TestStockRepository_Success_UpdateStockQuantity(t *testing.T) {
-	stockRepository = NewInMemoryStockRepository()
+	t.Run("UpdateStockQuantity Success", func(t *testing.T) {
+		newQuantity := 10
 
-	stockTest := domain.Stock{
-		Product_id: 1,
-		Quantity: 20,
-	}
+		stockRepository.AddStock(stockTest)
 
-	newQuantity := 10
+		resultTest := stockRepository.UpdateStockQuantity(stockTest.Id, newQuantity)
 
-	stockRepository.AddStock(&stockTest)
-
-	resultTest := stockRepository.UpdateStockQuantity(stockTest.Id, newQuantity)
-
-	if resultTest.Quantity != 30 {
-		t.Errorf("Quantity value expected: %d, got: %d", stockTest.Quantity + newQuantity, resultTest.Quantity)
-	}
+		assert.Equal(t, 30, resultTest.Quantity)
+	})
 }

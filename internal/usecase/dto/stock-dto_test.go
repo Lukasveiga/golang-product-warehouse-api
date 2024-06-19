@@ -2,8 +2,9 @@ package dto
 
 import (
 	"product-warehouse/internal/domain"
-	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestStockDto_Success_NewStock(t *testing.T) {
@@ -19,7 +20,5 @@ func TestStockDto_Success_NewStock(t *testing.T) {
 
 	resultTest := NewStock(&stockStoTest)
 
-	if !reflect.DeepEqual(*resultTest, stockTest) {
-		t.Errorf("Product body expected: %v, got: %v", stockTest, resultTest)
-	}
+	assert.Equal(t, stockTest, *resultTest)
 }

@@ -1,7 +1,9 @@
 package dto
 
 import (
+	"errors"
 	"product-warehouse/internal/domain"
+	"product-warehouse/internal/shared"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -21,8 +23,28 @@ func TestProductDto(t *testing.T) {
 			productTest.Price,
 		}
 	
-		resultTest := NewProduct(&productDtoTest)
+		resultTest, err := NewProduct(&productDtoTest)
 	
+		assert.Nil(t, err)
 		assert.Equal(t, productTest, *resultTest)
+	})
+
+	t.Run("NewProduct Invalid Input", func(t *testing.T) {
+		productDtoTest := ProductDto{
+			Name: "",
+			Description: "",
+			Price: -1.0,
+		}
+
+		expectedError := shared.ErrorMap{
+			"name": errors.New("cannot be empty"),
+			"description": errors.New("cannot be empty"),
+			"price": errors.New("must be greater than zero"),
+		}
+
+		resultTest, err := NewProduct(&productDtoTest)
+
+		assert.Nil(t, resultTest)
+		assert.Equal(t, expectedError, err)
 	})
 }

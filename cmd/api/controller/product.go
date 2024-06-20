@@ -31,7 +31,7 @@ func (pc ProductController) Create(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	newProduct := pc.createProductUsecase.Execute(productDto)
+	newProduct, _ := pc.createProductUsecase.Execute(productDto)
 
 	res.Header().Set("Content-Type", "application/json")
 	res.WriteHeader(http.StatusCreated)

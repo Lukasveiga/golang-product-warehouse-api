@@ -8,5 +8,8 @@ welcome:
 test:
 	go test ./... -v
 
+test-cover:
+	go test -cover ./...
+
 run-api:
 	go run cmd/api/main.go

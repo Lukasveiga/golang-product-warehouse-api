@@ -44,6 +44,6 @@ func TestFindProductUsecase(t *testing.T) {
 		resultTest, err := findProductByIdUsecase.Execute(invalidProductId)
 
 		assert.Nil(t, resultTest)
-		assert.Equal(t, expectedError, err)
+		assert.Equal(t, expectedError, err["error"])
 	})
 }

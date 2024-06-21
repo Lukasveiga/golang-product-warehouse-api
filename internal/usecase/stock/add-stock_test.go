@@ -1,10 +1,12 @@
 package usecase
 
 import (
+	"errors"
 	"fmt"
 	"product-warehouse/internal/domain"
 	port "product-warehouse/internal/port/repository"
 	"product-warehouse/internal/repository/inMemory"
+	"product-warehouse/internal/shared"
 	"product-warehouse/internal/usecase/dto"
 	"testing"
 
@@ -13,7 +15,7 @@ import (
 
 func addStockUsecaseSetup() (port.StockRepository, port.ProductRepository, *CreateStockUsecase, *domain.Product) {
 	stockRepository := inMemory.NewInMemoryStockRepository()
-	productRepository := inMemory.NewInMemoryProductRepository()
+	productRepository := inMemory.NewInMemoryProductRepository()	
 	createStockUsecase := NewCreateStockUsecase(stockRepository, productRepository)
 
 	productTest := domain.Product{
@@ -39,9 +41,11 @@ func TestAddStockUsecase(t *testing.T) {
 
 		resultTest, err := createStockUsecase.Execute(&stockDtoTest)
 
+		stock, _ := dto.NewStock(&stockDtoTest)
+
 		assert.Nil(t, err)
 		assert.NotEqual(t, 0, resultTest.Id)
-		assert.True(t, stockEquity(dto.NewStock(&stockDtoTest), resultTest))
+		assert.True(t, stockEquity(stock, resultTest))
 	})
 
 	t.Run("CreateStock Success Existing Stock", func(t *testing.T) {
@@ -73,10 +77,28 @@ func TestAddStockUsecase(t *testing.T) {
 
 		expectedError := fmt.Errorf("product with id %d not found", stockDtoTest.Product_id)
 
-		resultTest, err := createStockUsecase.Execute(&stockDtoTest)
+		resultTest, errs := createStockUsecase.Execute(&stockDtoTest)
 
 		assert.Nil(t, resultTest)
-		assert.Equal(t, expectedError, err)
+		assert.Equal(t, expectedError, errs["error"])
+	})
+
+	t.Run("CreateStock Invalid Input", func(t *testing.T) {
+		product := productRepository.AddProduct(productTest)
+
+		stockDtoTest := dto.StockDto{
+			Product_id: product.Id,
+			Quantity: -1,
+		}
+
+		expectedError := shared.ErrorMap{
+			"quantity": errors.New("quantity cannot be negative value"),
+		}
+
+		resultTest, errs := createStockUsecase.Execute(&stockDtoTest)
+
+		assert.Nil(t, resultTest)
+		assert.Equal(t, expectedError, errs)
 	})
 }
 

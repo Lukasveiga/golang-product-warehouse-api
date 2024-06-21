@@ -31,9 +31,9 @@ func (sc StockController) Create(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	newStock, err := sc.createStock.Execute(stockDto)
+	newStock, errs := sc.createStock.Execute(stockDto)
 
-	if err != nil {
+	if errs != nil {
 		http.Error(res, "Product not found", http.StatusNotFound)
 		return
 	}
@@ -51,10 +51,10 @@ func (sc StockController) FindStockByProductId(res http.ResponseWriter, req *htt
 		return
 	}
 
-	stock, err := sc.findStockByProductId.Execute(productId)
+	stock, errs := sc.findStockByProductId.Execute(productId)
 
-	if err != nil {
-		http.Error(res, err.Error(), http.StatusNotFound)
+	if len(errs) != 0 {
+		http.Error(res, errs["error"].Error(), http.StatusNotFound)
 		return
 	}
 

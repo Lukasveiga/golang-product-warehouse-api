@@ -46,10 +46,10 @@ func (pc ProductController) FindById(res http.ResponseWriter, req *http.Request)
 		return
 	}
 
-	product, err := pc.findProductByIdUsecase.Execute(productId)
+	product, errs := pc.findProductByIdUsecase.Execute(productId)
 
-	if err != nil {
-		http.Error(res, err.Error(), http.StatusNotFound)
+	if len(errs) != 0 {
+		http.Error(res, errs["error"].Error(), http.StatusNotFound)
 		return
 	}
 

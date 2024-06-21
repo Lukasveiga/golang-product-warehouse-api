@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"product-warehouse/internal/domain"
 	port "product-warehouse/internal/port/repository"
+	"product-warehouse/internal/shared"
 )
 
 type FindProductByIdUsecase struct {
@@ -16,11 +17,13 @@ func NewFindProductByIdUsecase(repo port.ProductRepository) *FindProductByIdUsec
 	}
 }
 
-func (uc FindProductByIdUsecase) Execute(productId int) (*domain.Product, error) {
+func (uc FindProductByIdUsecase) Execute(productId int) (*domain.Product, shared.ErrorMap) {
 	product := uc.repo.FindProductById(productId)
 
 	if product == nil {
-		return nil, fmt.Errorf("product with id %d not found", productId)
+		return nil, shared.ErrorMap{
+			"error": fmt.Errorf("product with id %d not found", productId),
+		}
 	}
 	
 	return product, nil

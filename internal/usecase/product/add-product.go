@@ -20,7 +20,7 @@ func NewCreateProductUsecase(repo port.ProductRepository) *CreateProductUsecase 
 func (uc CreateProductUsecase) Execute(product *dto.ProductDto) (*domain.Product, shared.ErrorMap) {
 	p, errs := dto.NewProduct(product)
 
-	if len(errs) != 0 {
+	if errs != nil {
 		return nil, errs
 	}
 	

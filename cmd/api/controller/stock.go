@@ -53,7 +53,7 @@ func (sc StockController) FindStockByProductId(res http.ResponseWriter, req *htt
 
 	stock, errs := sc.findStockByProductId.Execute(productId)
 
-	if len(errs) != 0 {
+	if errs != nil {
 		http.Error(res, errs["error"].Error(), http.StatusNotFound)
 		return
 	}

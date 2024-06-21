@@ -20,7 +20,7 @@ func NewProduct(productDto *ProductDto) (*domain.Product, shared.ErrorMap) {
 
 	errs := p.Validate()
 
-	if len(errs) != 0 {
+	if errs != nil {
 		return nil, errs
 	}
 

@@ -37,7 +37,7 @@ func (sc CreateStockUsecase) Execute(stockDto *dto.StockDto) (*domain.Stock, sha
 
 	s, errs := dto.NewStock(stockDto)
 
-	if len(errs) != 0 {
+	if errs != nil {
 		return nil, errs
 	}
 

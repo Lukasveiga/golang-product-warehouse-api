@@ -48,7 +48,7 @@ func (pc ProductController) FindById(res http.ResponseWriter, req *http.Request)
 
 	product, errs := pc.findProductByIdUsecase.Execute(productId)
 
-	if len(errs) != 0 {
+	if errs != nil {
 		http.Error(res, errs["error"].Error(), http.StatusNotFound)
 		return
 	}

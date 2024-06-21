@@ -18,7 +18,7 @@ func NewStock(stockDto *StockDto) (*domain.Stock, shared.ErrorMap) {
 
 	errs := s.Validate()
 
-	if errs != nil {
+	if len(errs) != 0 {
 		return nil, errs
 	}
 

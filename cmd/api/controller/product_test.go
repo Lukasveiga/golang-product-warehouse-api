@@ -44,7 +44,7 @@ func TestProductController(t *testing.T) {
 
 	productController := productControllerSetup(mockProduct)
 
-	t.Run("ProductController Create Success", func(t *testing.T) {
+	t.Run("Create Success", func(t *testing.T) {
 
 		productDto := &dto.ProductDto{
 			Name: product.Name,
@@ -66,5 +66,31 @@ func TestProductController(t *testing.T) {
 
 		assert.Equal(t, http.StatusCreated, got.StatusCode)
 		assert.Equal(t, *product, responseBody)
+	})
+
+	t.Run("Create BadRequest Invalid Input", func(t *testing.T) {
+
+		productDto := &dto.ProductDto{
+			Name: "",
+			Description: "",
+			Price: -1.0,
+		}
+
+		body, _ := json.Marshal(productDto)
+
+		req := httptest.NewRequest("POST", "/product", bytes.NewBuffer(body))
+		res := httptest.NewRecorder()
+
+		productController.Create(res, req)
+
+		got := res.Result()
+
+		var responseBody map[string]string
+		json.NewDecoder(res.Body).Decode(&responseBody)
+
+		assert.Equal(t, http.StatusBadRequest, got.StatusCode)
+		assert.Equal(t, responseBody["name"], "cannot be empty")
+		assert.Equal(t, responseBody["description"], "cannot be empty")
+		assert.Equal(t, responseBody["price"], "must be greater than zero")
 	})
 }

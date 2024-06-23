@@ -29,7 +29,7 @@ func (pc ProductController) Create(res http.ResponseWriter, req *http.Request) {
 	err := json.NewDecoder(req.Body).Decode(&productDto)
 
 	if err != nil {
-		http.Error(res, "Decoding error", http.StatusBadRequest)
+		http.Error(res, "Decoding Error", http.StatusBadRequest)
 		return
 	}
 

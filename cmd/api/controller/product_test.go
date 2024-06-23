@@ -9,30 +9,13 @@ import (
 	"net/http/httptest"
 	"product-warehouse/internal/domain"
 	"product-warehouse/internal/usecase/dto"
-	usecase "product-warehouse/internal/usecase/product"
 	"testing"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/stretchr/testify/assert"
 )
 
-type MockProduct struct {
-	product *domain.Product
-}
 
-func(m *MockProduct) AddProduct(product *domain.Product) *domain.Product {
-	return m.product
-}
-
-func (m *MockProduct) FindProductById(id int) (*domain.Product) {
-	return m.product
-}
-
-func productControllerSetup(mock *MockProduct) *ProductController{
-	createProductUsecase := usecase.NewCreateProductUsecase(mock)
-	findProductUsecase := usecase.NewFindProductByIdUsecase(mock)
-	return NewProductController(createProductUsecase, findProductUsecase)
-}
 
 func TestProductController(t *testing.T) {
 
@@ -43,9 +26,9 @@ func TestProductController(t *testing.T) {
 		Price: 20.0,
 	}
 
-	mockProduct := &MockProduct{product: product}
+	mockProduct := &MockProduct{Product: product}
 
-	productController := productControllerSetup(mockProduct)
+	productController := ProductControllerSetup(mockProduct)
 
 	t.Run("Create Success", func(t *testing.T) {
 
@@ -129,8 +112,8 @@ func TestProductController(t *testing.T) {
 	})
 
 	t.Run("FindById NotFound Product", func(t *testing.T) {
-		mockProduct = &MockProduct{product: nil}
-		productController = productControllerSetup(mockProduct)
+		mockProduct = &MockProduct{Product: nil}
+		productController = ProductControllerSetup(mockProduct)
 
 		id := "2"
 
@@ -148,8 +131,8 @@ func TestProductController(t *testing.T) {
 	})
 
 	t.Run("FindById Invalid Id Param", func(t *testing.T) {
-		mockProduct = &MockProduct{product: nil}
-		productController = productControllerSetup(mockProduct)
+		mockProduct = &MockProduct{Product: nil}
+		productController = ProductControllerSetup(mockProduct)
 
 		id := "a"
 

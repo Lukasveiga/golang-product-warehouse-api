@@ -31,14 +31,14 @@ func (sc CreateStockUsecase) Execute(stockDto *dto.StockDto) (*domain.Stock, sha
 
 	stock := sc.stockRepo.FindStockByProductId(stockDto.Product_id)
 
-	if stock != nil {
-		return sc.stockRepo.UpdateStockQuantity(stock.Id, stockDto.Quantity), nil
-	}
-
 	s, errs := dto.NewStock(stockDto)
 
 	if errs != nil {
 		return nil, errs
+	}
+
+	if stock != nil {
+		return sc.stockRepo.UpdateStockQuantity(stock.Id, stockDto.Quantity), nil
 	}
 
 	return sc.stockRepo.AddStock(s), nil

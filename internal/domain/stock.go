@@ -15,7 +15,7 @@ func (s *Stock) Validate() shared.ErrorMap {
 	errs := make(shared.ErrorMap)
 
 	if s.Quantity < 0 {
-		errs["quantity"] = errors.New("quantity cannot be negative value")
+		errs["quantity"] = errors.New("cannot be negative value")
 	}
 
 	if len(errs) == 0 {

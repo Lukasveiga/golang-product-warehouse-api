@@ -92,7 +92,7 @@ func TestAddStockUsecase(t *testing.T) {
 		}
 
 		expectedError := shared.ErrorMap{
-			"quantity": errors.New("quantity cannot be negative value"),
+			"quantity": errors.New("cannot be negative value"),
 		}
 
 		resultTest, errs := createStockUsecase.Execute(&stockDtoTest)

@@ -25,12 +25,10 @@ Progress documentation of my first golang API
 ### Outstanding topics:
 
 - [] Custom erros;
+- [] Conncetion with database (PostgreSQL)
 - [x] Unit tests;
 - [] Integration tests;
-- [] Api documentation;
-- [] Monitoring;
 - [] Benchmark;
-- [] CI/CD
 
 ## Api
 

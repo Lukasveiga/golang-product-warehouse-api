@@ -2,7 +2,9 @@ package controller
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
+	"product-warehouse/cmd/api/utils"
 	"product-warehouse/internal/usecase/dto"
 	usecase "product-warehouse/internal/usecase/product"
 	"strconv"
@@ -27,11 +29,25 @@ func (pc ProductController) Create(res http.ResponseWriter, req *http.Request) {
 	err := json.NewDecoder(req.Body).Decode(&productDto)
 
 	if err != nil {
-		http.Error(res, "Decoding error", http.StatusBadRequest)
+		http.Error(res, "Decoding Error", http.StatusBadRequest)
 		return
 	}
 
-	newProduct, _ := pc.createProductUsecase.Execute(productDto)
+	newProduct, errs := pc.createProductUsecase.Execute(productDto)
+
+	if errs != nil {
+
+		errsString, err := utils.ErrorFormatter(errs)
+		
+		if err != nil {
+			log.Print(err)
+			http.Error(res, "Internal error", http.StatusInternalServerError)
+			return
+		}
+
+		http.Error(res, errsString, http.StatusBadRequest)
+		return
+	}
 
 	res.Header().Set("Content-Type", "application/json")
 	res.WriteHeader(http.StatusCreated)

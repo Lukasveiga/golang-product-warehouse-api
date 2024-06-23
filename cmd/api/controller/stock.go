@@ -2,7 +2,9 @@ package controller
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
+	"product-warehouse/cmd/api/utils"
 	"product-warehouse/internal/usecase/dto"
 	usecase "product-warehouse/internal/usecase/stock"
 	"strconv"
@@ -34,7 +36,22 @@ func (sc StockController) Create(res http.ResponseWriter, req *http.Request) {
 	newStock, errs := sc.createStock.Execute(stockDto)
 
 	if errs != nil {
-		http.Error(res, "Product not found", http.StatusNotFound)
+		errsString, err := utils.ErrorFormatter(errs)
+
+		if err != nil {
+			log.Print(err)
+			http.Error(res, "Internal error", http.StatusInternalServerError)
+			return
+		}
+
+		_, key := errs["error"]
+
+		if key {
+			http.Error(res, errsString, http.StatusNotFound)
+			return
+		}
+
+		http.Error(res, errsString, http.StatusBadRequest)
 		return
 	}
 

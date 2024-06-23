@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"product-warehouse/cmd/api/controller"
@@ -22,7 +21,7 @@ func main() {
 
 	switch ENV {
 	case "prod":
-		fmt.Println("Production environment")
+		log.Println("Production environment")
 	default:
 		productRepository = inMemory.NewInMemoryProductRepository()
 		stockRepository = inMemory.NewInMemoryStockRepository()
@@ -43,6 +42,6 @@ func main() {
 
 	router := routes.RouterInitializer(controllers)
 
-	fmt.Printf("running on port %s - environment '%s'\n", PORT, ENV)
+	log.Printf("running on port %s - environment '%s'\n", PORT, ENV)
 	log.Fatal(http.ListenAndServe(":"+PORT, router))
 }

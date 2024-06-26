@@ -16,6 +16,12 @@
     <a alt="PostgreSQL">
         <img src="https://img.shields.io/badge/PostgreSQL-v14-lightgreen.svg" />
     </a>
+     <a alt="Goose">
+        <img src="https://img.shields.io/badge/Goose-v3.0.0-orange.svg" />
+    </a>
+     <a alt="Testcontainers">
+        <img src="https://img.shields.io/badge/TestcontainersGo-v0.31.0-yellow.svg" />
+    </a>
 </p>
 
 ### Overview:

@@ -7,9 +7,9 @@ import (
 
 type Product struct {
 	Id int `json:"id"`
-	Name string `json:"name"`
-	Description string `json:"description"`
-	Price float64 `json:"price"`
+	Name string `json:"name" db:"name"`
+	Description string `json:"description" db:"description"`
+	Price float64 `json:"price" db:"price"`
 }
 
 func (p *Product) Validate() shared.ErrorMap {

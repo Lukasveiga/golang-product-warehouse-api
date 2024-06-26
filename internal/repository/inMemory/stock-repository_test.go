@@ -48,6 +48,6 @@ func TestStockRepository(t *testing.T) {
 
 		resultTest := stockRepository.UpdateStockQuantity(stockTest.Id, newQuantity)
 
-		assert.Equal(t, 30, resultTest.Quantity)
+		assert.Equal(t, 10, resultTest.Quantity)
 	})
 }

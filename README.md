@@ -31,7 +31,7 @@ Progress documentation of my first golang API
 ### Outstanding topics:
 
 - [] Custom erros;
-- [x] Conncetion with database (PostgreSQL)
+- [x] Connection with database (PostgreSQL)
 - [x] Migrations (Goose)
 - [x] Unit tests;
 - [] Integration tests;

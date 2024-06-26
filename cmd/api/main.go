@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"product-warehouse/cmd/api/controller"
@@ -8,6 +9,7 @@ import (
 	"product-warehouse/config"
 	port "product-warehouse/internal/port/repository"
 	"product-warehouse/internal/repository/inMemory"
+	"product-warehouse/internal/repository/postgre"
 	productUsecase "product-warehouse/internal/usecase/product"
 	stockUsecase "product-warehouse/internal/usecase/stock"
 )
@@ -16,12 +18,27 @@ func main() {
 	PORT := config.GetEnv("PORT")
 	ENV := config.GetEnv("ENV")
 
+	var (
+		host = config.GetEnv("HOST")
+		db_port = config.GetEnv("DB_PORT")
+		user = config.GetEnv("DB_USERNAME")
+		password = config.GetEnv("DB_PASSWORD")
+		dbname = config.GetEnv("DB_NAME")
+	)
+
 	var productRepository port.ProductRepository
 	var stockRepository port.StockRepository
 
 	switch ENV {
 	case "prod":
-		log.Println("Production environment")
+		psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
+		"password=%s dbname=%s sslmode=disable",
+		host, db_port, user, password, dbname)
+		
+		dbConnection := config.InitConfig(psqlInfo)
+
+		productRepository = postgre.NewPostgreProductRepository(dbConnection)
+		stockRepository = postgre.NewPostgreStockRepository(dbConnection)
 	default:
 		productRepository = inMemory.NewInMemoryProductRepository()
 		stockRepository = inMemory.NewInMemoryStockRepository()

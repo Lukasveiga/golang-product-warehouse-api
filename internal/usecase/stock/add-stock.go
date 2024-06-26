@@ -38,7 +38,9 @@ func (sc CreateStockUsecase) Execute(stockDto *dto.StockDto) (*domain.Stock, sha
 	}
 
 	if stock != nil {
-		return sc.stockRepo.UpdateStockQuantity(stock.Id, stockDto.Quantity), nil
+		newQuantity := stock.Quantity + stockDto.Quantity
+
+		return sc.stockRepo.UpdateStockQuantity(stock.Id, newQuantity), nil
 	}
 
 	return sc.stockRepo.AddStock(s), nil

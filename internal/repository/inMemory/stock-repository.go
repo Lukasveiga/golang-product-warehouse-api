@@ -42,7 +42,7 @@ func (db *InMemoryStockRepository) UpdateStockQuantity(stockId int, quantity int
 	for i := range db.inMemoryStockDb {
 		if db.inMemoryStockDb[i].Id == stockId {
 			stock = &db.inMemoryStockDb[i]
-			stock.Quantity += quantity
+			stock.Quantity = quantity
 			break
 		}
 	}

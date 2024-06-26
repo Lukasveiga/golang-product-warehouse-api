@@ -19,7 +19,7 @@ func main() {
 	ENV := config.GetEnv("ENV")
 
 	var (
-		host = config.GetEnv("HOST")
+		host = config.GetEnv("DB_HOST")
 		db_port = config.GetEnv("DB_PORT")
 		user = config.GetEnv("DB_USERNAME")
 		password = config.GetEnv("DB_PASSWORD")

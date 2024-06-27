@@ -30,7 +30,7 @@ Progress documentation of my first golang API
 
 ### Outstanding topics:
 
-- [] Custom erros;
+- [] Custom errors + error handling;
 - [x] Connection with database (PostgreSQL)
 - [x] Migrations (Goose)
 - [x] Unit tests;

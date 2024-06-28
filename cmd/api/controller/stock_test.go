@@ -159,7 +159,7 @@ func TestStockController(t *testing.T) {
 		got := res.Result()
 
 		assert.Equal(t, http.StatusNotFound, got.StatusCode)
-		assert.Equal(t, fmt.Sprintf("product with id %s not found\n", productId), res.Body.String())
+		assert.Equal(t, fmt.Sprintf("stock with product_id %s not found\n", productId), res.Body.String())
 	})
 
 	t.Run("FindStockByProductId Invalid Id Param", func(t *testing.T) {

@@ -22,7 +22,7 @@ func (sc FindStockByProductIdUsecase) Execute(productId int) (*domain.Stock, sha
 
 	if stock == nil {
 		return nil, shared.ErrorMap{
-			"error": fmt.Errorf("product with id %d not found", productId),
+			"error": fmt.Errorf("stock with product_id %d not found", productId),
 		}
 	}
 	return stock, nil

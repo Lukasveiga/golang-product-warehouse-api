@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
@@ -26,8 +27,11 @@ func main() {
 		dbname = config.GetEnv("DB_NAME")
 	)
 
-	var productRepository port.ProductRepository
-	var stockRepository port.StockRepository
+	var (
+		productRepository port.ProductRepository
+		stockRepository port.StockRepository
+	)
+	
 
 	switch ENV {
 	case "prod":
@@ -35,7 +39,7 @@ func main() {
 		"password=%s dbname=%s sslmode=disable",
 		host, db_port, user, password, dbname)
 		
-		dbConnection := config.InitConfig(psqlInfo)
+		dbConnection := initDbConnection(psqlInfo)
 
 		productRepository = postgre.NewPostgreProductRepository(dbConnection)
 		stockRepository = postgre.NewPostgreStockRepository(dbConnection)
@@ -44,6 +48,14 @@ func main() {
 		stockRepository = inMemory.NewInMemoryStockRepository()
 	}
 	
+	startServer(PORT, ENV, productRepository, stockRepository)
+}
+
+func initDbConnection(psqlInfo string) *sql.DB {
+	return config.InitConfig(psqlInfo)
+}
+
+func startServer(PORT, ENV string, productRepository port.ProductRepository, stockRepository port.StockRepository) {
 	createProductUsecase := productUsecase.NewCreateProductUsecase(productRepository)
 	findProductByIdUsecase := productUsecase.NewFindProductByIdUsecase(productRepository)
 	productController := controller.NewProductController(createProductUsecase, findProductByIdUsecase)
@@ -62,3 +74,4 @@ func main() {
 	log.Printf("running on port %s - environment '%s'\n", PORT, ENV)
 	log.Fatal(http.ListenAndServe(":"+PORT, router))
 }
+

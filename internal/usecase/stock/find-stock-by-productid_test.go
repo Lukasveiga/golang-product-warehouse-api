@@ -38,7 +38,7 @@ func TestFindStockUsecase(t *testing.T) {
 	t.Run("FindStockByProductId Not Found", func(t *testing.T) {
 		invalidProductId := 2
 
-		expectedError := fmt.Errorf("product with id %d not found", invalidProductId)
+		expectedError := fmt.Errorf("stock with product_id %d not found", invalidProductId)
 
 		resultTest, err := findStockByProductIdUsecase.Execute(invalidProductId)
 

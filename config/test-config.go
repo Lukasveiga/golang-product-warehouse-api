@@ -3,6 +3,8 @@ package config
 import (
 	"context"
 	"database/sql"
+	"path/filepath"
+	"runtime"
 	"time"
 
 	"github.com/testcontainers/testcontainers-go"
@@ -17,6 +19,9 @@ var (
 
 
 func setupContainer() {
+	_,b,_,_ := runtime.Caller(0)
+	basepath := filepath.Dir(b)
+
 	ctx = context.Background()
 	c, err := postgres.RunContainer(
 		ctx,
@@ -24,7 +29,7 @@ func setupContainer() {
 		postgres.WithDatabase("test"),
 		postgres.WithUsername("postgre"),
 		postgres.WithPassword("postgre"),
-		postgres.WithInitScripts("../../../config/init_db.sql"),
+		postgres.WithInitScripts(basepath + "/init_db.sql"),
 		testcontainers.WithWaitStrategy(
 			wait.ForLog("database system is ready to accept connections").
 				WithOccurrence(2).

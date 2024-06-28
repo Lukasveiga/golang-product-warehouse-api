@@ -34,7 +34,7 @@ Progress documentation of my first golang API
 - [x] Connection with database (PostgreSQL)
 - [x] Migrations (Goose)
 - [x] Unit tests;
-- [] Integration tests;
+- [x] Integration tests;
 - [] Benchmark;
 
 ## Api

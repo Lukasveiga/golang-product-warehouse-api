@@ -3,7 +3,6 @@ package usecase
 import (
 	"product-warehouse/internal/domain"
 	port "product-warehouse/internal/port/repository"
-	"product-warehouse/internal/shared"
 	"product-warehouse/internal/usecase/dto"
 )
 
@@ -17,7 +16,7 @@ func NewCreateProductUsecase(repo port.ProductRepository) *CreateProductUsecase 
 	}
 }
 
-func (uc CreateProductUsecase) Execute(product *dto.ProductDto) (*domain.Product, shared.ErrorMap) {
+func (uc CreateProductUsecase) Execute(product *dto.ProductDto) (*domain.Product, error) {
 	p, errs := dto.NewProduct(product)
 
 	if errs != nil {

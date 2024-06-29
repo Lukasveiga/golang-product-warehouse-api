@@ -114,11 +114,8 @@ func TestStockController(t *testing.T) {
 
 		got := res.Result()
 
-		var responseBody map[string]string
-		json.NewDecoder(res.Body).Decode(&responseBody)
-
 		assert.Equal(t, http.StatusNotFound, got.StatusCode)
-		assert.Equal(t, fmt.Sprintf("product with id %d not found", productId), responseBody["error"])
+		assert.Equal(t, fmt.Sprintf("product not found with id %d\n", productId), res.Body.String())
 	})
 
 	t.Run("FindStockByProductId Success", func(t *testing.T) {
@@ -159,7 +156,7 @@ func TestStockController(t *testing.T) {
 		got := res.Result()
 
 		assert.Equal(t, http.StatusNotFound, got.StatusCode)
-		assert.Equal(t, fmt.Sprintf("stock with product_id %s not found\n", productId), res.Body.String())
+		assert.Equal(t, fmt.Sprintf("product not found with id %s\n", productId), res.Body.String())
 	})
 
 	t.Run("FindStockByProductId Invalid Id Param", func(t *testing.T) {

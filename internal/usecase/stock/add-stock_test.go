@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	"errors"
 	"fmt"
 	"product-warehouse/internal/domain"
 	port "product-warehouse/internal/port/repository"
@@ -75,12 +74,15 @@ func TestAddStockUsecase(t *testing.T) {
 			Quantity: 10,
 		}
 
-		expectedError := fmt.Errorf("product with id %d not found", stockDtoTest.Product_id)
+		expectedError := fmt.Errorf("product not found with id %d", stockDtoTest.Product_id)
 
-		resultTest, errs := createStockUsecase.Execute(&stockDtoTest)
+		resultTest, err := createStockUsecase.Execute(&stockDtoTest)
+
+		_, ok := err.(*shared.NotFoundError)
 
 		assert.Nil(t, resultTest)
-		assert.Equal(t, expectedError, errs["error"])
+		assert.True(t, ok)
+		assert.Equal(t, expectedError.Error(), err.Error())
 	})
 
 	t.Run("CreateStock Invalid Input", func(t *testing.T) {
@@ -91,14 +93,19 @@ func TestAddStockUsecase(t *testing.T) {
 			Quantity: -1,
 		}
 
-		expectedError := shared.ErrorMap{
-			"quantity": errors.New("cannot be negative value"),
+		expectedError := &shared.ValidationError{
+			Errors: map[string]string{
+				"quantity": "cannot be negative value",
+			},
 		}
 
-		resultTest, errs := createStockUsecase.Execute(&stockDtoTest)
+		resultTest, err := createStockUsecase.Execute(&stockDtoTest)
+
+		_, ok := err.(*shared.ValidationError)
 
 		assert.Nil(t, resultTest)
-		assert.Equal(t, expectedError, errs)
+		assert.True(t, ok)
+		assert.Equal(t, expectedError, err)
 	})
 }
 

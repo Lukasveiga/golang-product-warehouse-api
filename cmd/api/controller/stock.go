@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"product-warehouse/cmd/api/utils"
+	"product-warehouse/internal/shared"
 	"product-warehouse/internal/usecase/dto"
 	usecase "product-warehouse/internal/usecase/stock"
 	"strconv"
@@ -33,32 +33,38 @@ func (sc StockController) Create(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	newStock, errs := sc.createStock.Execute(stockDto)
+	newStock, err := sc.createStock.Execute(stockDto)
 
-	if errs != nil {
-		errsString, err := utils.ErrorFormatter(errs)
+	if err != nil {
+		if nf, ok := err.(*shared.NotFoundError); ok {
+			http.Error(res, nf.Error(), http.StatusNotFound)
+			return
+			
+		} else if ve, ok := err.(*shared.ValidationError); ok {
+			jsonData, err := json.Marshal(ve.Errors)
 
-		if err != nil {
+			if err != nil {
+				log.Print(err)
+				http.Error(res, "Internal error", http.StatusInternalServerError)
+				return
+			}
+
+			http.Error(res, string(jsonData), http.StatusBadRequest)
+			return
+			
+		} else {
 			log.Print(err)
 			http.Error(res, "Internal error", http.StatusInternalServerError)
 			return
 		}
-
-		_, key := errs["error"]
-
-		if key {
-			http.Error(res, errsString, http.StatusNotFound)
-			return
-		}
-
-		http.Error(res, errsString, http.StatusBadRequest)
-		return
 	}
 
 	res.Header().Set("Content-Type", "application/json")
 	res.WriteHeader(http.StatusCreated)
 	json.NewEncoder(res).Encode(newStock)
 }
+
+	
 
 func (sc StockController) FindStockByProductId(res http.ResponseWriter, req *http.Request) {
 	productId, err := strconv.Atoi(chi.URLParam(req, "productId"))
@@ -68,10 +74,10 @@ func (sc StockController) FindStockByProductId(res http.ResponseWriter, req *htt
 		return
 	}
 
-	stock, errs := sc.findStockByProductId.Execute(productId)
+	stock, err := sc.findStockByProductId.Execute(productId)
 
-	if errs != nil {
-		http.Error(res, errs["error"].Error(), http.StatusNotFound)
+	if err != nil {
+		http.Error(res, err.Error(), http.StatusNotFound)
 		return
 	}
 

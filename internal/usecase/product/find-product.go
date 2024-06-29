@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	"fmt"
 	"product-warehouse/internal/domain"
 	port "product-warehouse/internal/port/repository"
 	"product-warehouse/internal/shared"
@@ -17,14 +16,14 @@ func NewFindProductByIdUsecase(repo port.ProductRepository) *FindProductByIdUsec
 	}
 }
 
-func (uc FindProductByIdUsecase) Execute(productId int) (*domain.Product, shared.ErrorMap) {
+func (uc FindProductByIdUsecase) Execute(productId int) (*domain.Product, error) {
 	product := uc.repo.FindProductById(productId)
 
 	if product == nil {
-		return nil, shared.ErrorMap{
-			"error": fmt.Errorf("product with id %d not found", productId),
-		}
+		return nil, &shared.NotFoundError{
+			Object: "product",
+			Id: productId,
+		} 
 	}
-	
 	return product, nil
 }

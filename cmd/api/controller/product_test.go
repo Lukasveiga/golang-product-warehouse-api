@@ -127,7 +127,7 @@ func TestProductController(t *testing.T) {
 		productController.FindById(res, req)
 
 		assert.Equal(t, http.StatusNotFound, res.Result().StatusCode)
-		assert.Equal(t, fmt.Sprintf("product with id %s not found\n", id), res.Body.String())
+		assert.Equal(t, fmt.Sprintf("product not found with id %s\n", id), res.Body.String())
 	})
 
 	t.Run("FindById Invalid Id Param", func(t *testing.T) {

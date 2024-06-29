@@ -2,7 +2,6 @@ package dto
 
 import (
 	"product-warehouse/internal/domain"
-	"product-warehouse/internal/shared"
 )
 
 type ProductDto struct {
@@ -11,7 +10,7 @@ type ProductDto struct {
 	Price float64 `json:"price"`
 }
 
-func NewProduct(productDto *ProductDto) (*domain.Product, shared.ErrorMap) {
+func NewProduct(productDto *ProductDto) (*domain.Product, error) {
 	p := &domain.Product{
 		Name: productDto.Name,
 		Description: productDto.Description,

@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	"fmt"
 	"product-warehouse/internal/domain"
 	port "product-warehouse/internal/port/repository"
 	"product-warehouse/internal/shared"
@@ -20,12 +19,13 @@ func NewCreateStockUsecase(stockRepo port.StockRepository, productRepo port.Prod
 	}
 }
 
-func (sc CreateStockUsecase) Execute(stockDto *dto.StockDto) (*domain.Stock, shared.ErrorMap) {
+func (sc CreateStockUsecase) Execute(stockDto *dto.StockDto) (*domain.Stock, error) {
 	product := sc.productRepo.FindProductById(stockDto.Product_id)
 
 	if product == nil {
-		return nil, shared.ErrorMap{
-			"error": fmt.Errorf("product with id %d not found", stockDto.Product_id),
+		return nil, &shared.NotFoundError{
+			Object: "product",
+			Id: stockDto.Product_id,
 		}
 	}
 
@@ -39,7 +39,6 @@ func (sc CreateStockUsecase) Execute(stockDto *dto.StockDto) (*domain.Stock, sha
 
 	if stock != nil {
 		newQuantity := stock.Quantity + stockDto.Quantity
-
 		return sc.stockRepo.UpdateStockQuantity(stock.Id, newQuantity), nil
 	}
 

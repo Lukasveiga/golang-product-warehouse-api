@@ -5,6 +5,7 @@ import (
 	"product-warehouse/internal/domain"
 	port "product-warehouse/internal/port/repository"
 	"product-warehouse/internal/repository/inMemory"
+	"product-warehouse/internal/shared"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -39,11 +40,14 @@ func TestFindProductUsecase(t *testing.T) {
 	t.Run("FindProductById Not Found", func(t *testing.T) {
 		invalidProductId := productTest.Id + 1
 
-		expectedError := fmt.Errorf("product with id %d not found", invalidProductId)
+		expectedError := fmt.Errorf("product not found with id %d", invalidProductId)
 
 		resultTest, err := findProductByIdUsecase.Execute(invalidProductId)
 
+		_, ok := err.(*shared.NotFoundError)
+
 		assert.Nil(t, resultTest)
-		assert.Equal(t, expectedError, err["error"])
+		assert.True(t, ok)
+		assert.Equal(t, expectedError.Error(), err.Error())
 	})
 }

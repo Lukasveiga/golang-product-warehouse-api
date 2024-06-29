@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	"errors"
 	"product-warehouse/internal/domain"
 	port "product-warehouse/internal/port/repository"
 	"product-warehouse/internal/repository/inMemory"
@@ -46,15 +45,20 @@ func TestCreateProductUsecase(t *testing.T) {
 			Price: -1.0,
 		}
 
-		expectedError := shared.ErrorMap{
-			"name": errors.New("cannot be empty"),
-			"description": errors.New("cannot be empty"),
-			"price": errors.New("must be greater than zero"),
+		expectedError := &shared.ValidationError{
+			Errors: map[string]string{
+				"name": "cannot be empty",
+				"description": "cannot be empty",
+				"price": "must be greater than zero",
+			},
 		}
 
 		resultTest, err := createProductUsecase.Execute(&productDtoTest)
 
+		_, ok := err.(*shared.ValidationError)
+
 		assert.Nil(t, resultTest)
+		assert.True(t, ok)
 		assert.Equal(t, expectedError, err)
 	})
 }

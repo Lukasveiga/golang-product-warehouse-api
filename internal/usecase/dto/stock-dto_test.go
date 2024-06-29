@@ -1,7 +1,6 @@
 package dto
 
 import (
-	"errors"
 	"product-warehouse/internal/domain"
 	"product-warehouse/internal/shared"
 	"testing"
@@ -33,13 +32,18 @@ func TestStockDto(t *testing.T) {
 			Quantity: -1,
 		}
 
-		expectedError := shared.ErrorMap{
-			"quantity": errors.New("cannot be negative value"),
+		expectedError := &shared.ValidationError{
+			Errors: map[string]string{
+				"quantity": "cannot be negative value",
+			},
 		}
 
 		resultTest, err := NewStock(&stockStoTest)
 
+		_, ok := err.(*shared.ValidationError)
+
 		assert.Nil(t, resultTest)
+		assert.True(t, ok)
 		assert.Equal(t, expectedError, err)
 	})
 }

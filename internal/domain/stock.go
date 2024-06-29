@@ -1,7 +1,6 @@
 package domain
 
 import (
-	"errors"
 	"product-warehouse/internal/shared"
 )
 
@@ -11,16 +10,18 @@ type Stock struct {
 	Quantity int `json:"quantity"`
 }
 
-func (s *Stock) Validate() shared.ErrorMap {
-	errs := make(shared.ErrorMap)
+func (s *Stock) Validate() error {
+	validationError := &shared.ValidationError{
+		Errors: make(map[string]string),
+	}
 
 	if s.Quantity < 0 {
-		errs["quantity"] = errors.New("cannot be negative value")
+		validationError.AddError("quantity", "cannot be negative value")
 	}
 
-	if len(errs) == 0 {
-		return nil
+	if validationError.HasErrors() {
+		return validationError
 	}
 
-	return errs
+	return nil
 }

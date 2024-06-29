@@ -16,7 +16,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestIntegrat(t *testing.T) {
+func TestIntegration(t *testing.T) {
 	
 	dbConnection := config.SetupDbConnection()
 
@@ -164,12 +164,14 @@ func TestIntegrat(t *testing.T) {
 		defer res.Body.Close()
 
 		responseBody, err := io.ReadAll(res.Body)
+
+		fmt.Println(res.Body)
 		if err != nil {
 			panic(err)
 		}
 
 		assert.Equal(t, http.StatusNotFound, res.StatusCode)
-		assert.Equal(t, fmt.Sprintf("product with id %s not found\n", productId), string(responseBody))
+		assert.Equal(t, fmt.Sprintf("product not found with id %s\n", productId), string(responseBody))
 	})
 
 	t.Run("Should return status code 201 and stock body", func(t *testing.T) {
@@ -267,16 +269,8 @@ func TestIntegrat(t *testing.T) {
 			panic(err)
 		}
 
-		var responseErros map[string]string
-
-		err = json.Unmarshal(responseBody, &responseErros)
-
-		if err != nil {
-			panic(err)
-		}
-
 		assert.Equal(t, http.StatusNotFound, res.StatusCode)
-		assert.Equal(t, fmt.Sprintf("product with id %d not found", invalidStockDto.Product_id), responseErros["error"])
+		assert.Equal(t, fmt.Sprintf("product not found with id %d\n", invalidStockDto.Product_id), string(responseBody))
 	})
 
 	t.Run("Should return status code 200 and stock body", func(t *testing.T) {
@@ -331,6 +325,6 @@ func TestIntegrat(t *testing.T) {
 		}
 
 		assert.Equal(t, http.StatusNotFound, res.StatusCode)
-		assert.Equal(t, fmt.Sprintf("stock with product_id %s not found\n", productId), string(responseBody))
+		assert.Equal(t, fmt.Sprintf("product not found with id %s\n", productId), string(responseBody))
 	})
 }

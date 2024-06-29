@@ -1,7 +1,6 @@
 package domain
 
 import (
-	"errors"
 	"product-warehouse/internal/shared"
 )
 
@@ -12,25 +11,27 @@ type Product struct {
 	Price float64 `json:"price" db:"price"`
 }
 
-func (p *Product) Validate() shared.ErrorMap {
-	errs := make(shared.ErrorMap)
+func (p *Product) Validate() error {
+	validationError := &shared.ValidationError{
+		Errors: make(map[string]string),
+	}
 
 	if p.Name == "" {
-		errs["name"] = errors.New("cannot be empty")
+		validationError.AddError("name", "cannot be empty")
 	}
 
 	if p.Description == "" {
-		errs["description"] = errors.New("cannot be empty")
+		validationError.AddError("description", "cannot be empty")
 	}
 
 	if p.Price <= 0 {
-		errs["price"] = errors.New("must be greater than zero")
+		validationError.AddError("price", "must be greater than zero")
 	}
 
-	if len(errs) == 0 {
-		return nil
+	if validationError.HasErrors() {
+		return validationError
 	}
 
-	return errs
+	return nil
 }
 

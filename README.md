@@ -37,6 +37,7 @@ Progress documentation of my first golang API
 - [x] Unit tests;
 - [x] Integration tests;
 - [x] Logging;
+- [ ] Swagger/Open API documentation;
 - [ ] Benchmark;
 
 ## Api

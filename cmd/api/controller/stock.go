@@ -2,7 +2,7 @@ package controller
 
 import (
 	"encoding/json"
-	"log"
+	"log/slog"
 	"net/http"
 	"product-warehouse/internal/shared"
 	"product-warehouse/internal/usecase/dto"
@@ -44,7 +44,7 @@ func (sc StockController) Create(res http.ResponseWriter, req *http.Request) {
 			jsonData, err := json.Marshal(ve.Errors)
 
 			if err != nil {
-				log.Print(err)
+				slog.Error("stock controller", "method", "Create", "error", err)
 				http.Error(res, "Internal error", http.StatusInternalServerError)
 				return
 			}
@@ -53,7 +53,7 @@ func (sc StockController) Create(res http.ResponseWriter, req *http.Request) {
 			return
 			
 		} else {
-			log.Print(err)
+			slog.Error("stock controller", "method", "Create", "error", err)
 			http.Error(res, "Internal error", http.StatusInternalServerError)
 			return
 		}

@@ -3,6 +3,7 @@ package config
 import (
 	"context"
 	"database/sql"
+	"log/slog"
 	"path/filepath"
 	"runtime"
 	"time"
@@ -38,6 +39,7 @@ func setupContainer() {
 	)
 
 	if err != nil {
+		slog.Error("testcontainers configuration - RunContainer", "error", err)
 		panic(err)
 	}
 	
@@ -45,7 +47,10 @@ func setupContainer() {
 
 	connString = connString + "sslmode=disable"
 
+	slog.Debug("testcontainers url connection", "url", connString)
+
 	if err != nil {
+		slog.Error("testcontainers configuration - ConnectionString", "error", err)
 		panic(err)
 	}
 }

@@ -3,7 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"log"
+	"log/slog"
 	"net/http"
 	"product-warehouse/cmd/api/controller"
 	"product-warehouse/cmd/api/routes"
@@ -18,6 +18,8 @@ import (
 func main() {
 	PORT := config.GetEnv("PORT")
 	ENV := config.GetEnv("ENV")
+
+	config.LoggerConfig(ENV)
 
 	var (
 		host = config.GetEnv("DB_HOST")
@@ -52,6 +54,7 @@ func main() {
 }
 
 func initDbConnection(psqlInfo string) *sql.DB {
+	slog.Info("database connection established")
 	return config.InitConfig(psqlInfo)
 }
 
@@ -71,7 +74,7 @@ func startServer(PORT, ENV string, productRepository port.ProductRepository, sto
 
 	router := routes.RouterInitializer(controllers)
 
-	log.Printf("running on port %s - environment '%s'\n", PORT, ENV)
-	log.Fatal(http.ListenAndServe(":"+PORT, router))
+	slog.Info("server", "port", PORT, "environment", ENV)
+	slog.Error("error on tcp network", "error", http.ListenAndServe(":"+PORT, router))
 }
 

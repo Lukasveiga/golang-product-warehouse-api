@@ -2,7 +2,7 @@ package postgre
 
 import (
 	"database/sql"
-	"log"
+	"log/slog"
 	"product-warehouse/internal/domain"
 )
 
@@ -25,7 +25,7 @@ func (pr *PostgreProductRepository) AddProduct(product *domain.Product) *domain.
 	err := row.Scan(&savedProduct.Id, &savedProduct.Name, &savedProduct.Description, &savedProduct.Price)
 
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("postgre product repository", "method", "AddProduct", "error", err)
 	}
 
 	return &savedProduct
@@ -43,7 +43,7 @@ func (pr *PostgreProductRepository) FindProductById(id int) *domain.Product {
 	case err == sql.ErrNoRows:
 		return nil
 	case err != nil:
-		log.Fatal(err)
+		slog.Error("postgre product repository", "method", "FindProductById", "error", err)
 	}
 
 	return &product

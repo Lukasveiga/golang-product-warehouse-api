@@ -1,7 +1,7 @@
 package middlewares
 
 import (
-	"fmt"
+	"log/slog"
 	"net/http"
 	"time"
 )
@@ -14,7 +14,6 @@ func RequestLog(next http.Handler) http.Handler {
 
 		elapsedTime := time.Since(startTime)
 
-		fmt.Printf("Http request -> Method: %s - Path: %s - Duration: %s - Datetime: %s\n",
-		req.Method, req.URL.Path, elapsedTime.String(),time.Now())
+		slog.Info("http request information", "method", req.Method, "path", req.URL.Path, "duration_ms", elapsedTime.String())
 	})
 }

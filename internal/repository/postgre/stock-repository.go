@@ -2,7 +2,7 @@ package postgre
 
 import (
 	"database/sql"
-	"log"
+	"log/slog"
 	"product-warehouse/internal/domain"
 )
 
@@ -25,7 +25,7 @@ func (sr *PostgreStockRepository) AddStock(stock *domain.Stock) *domain.Stock {
 	err := row.Scan(&savedStock.Id, &savedStock.Product_id, &savedStock.Quantity)
 
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("postgre stock repository", "method", "AddStock", "error", err)
 	}
 
 	return &savedStock
@@ -43,7 +43,7 @@ func (sr *PostgreStockRepository) FindStockByProductId(productId int) (*domain.S
 	case err == sql.ErrNoRows:
 		return nil
 	case err != nil:
-		log.Fatal(err)
+		slog.Error("postgre stock repository", "method", "FindStockByProductId", "error", err)
 	}
 
 	return &stock
@@ -58,7 +58,7 @@ func (sr *PostgreStockRepository) UpdateStockQuantity(stockId int, quantity int)
 	err := row.Scan(&stock.Id, &stock.Product_id, &stock.Quantity)
 
 	if err != nil {
-		log.Fatal(err)
+		slog.Error("postgre stock repository", "method", "UpdateStockQuantity", "error", err)
 	}
 
 	return &stock

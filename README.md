@@ -36,7 +36,7 @@ Progress documentation of my first golang API
 - [x] Migrations (Goose)
 - [x] Unit tests;
 - [x] Integration tests;
-- [ ] Logging;
+- [x] Logging;
 - [ ] Benchmark;
 
 ## Api
